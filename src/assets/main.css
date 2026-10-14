@@ -1,0 +1,7 @@
+:root {
+  --board-size: min(100vw, 650px);
+  --c-black: #1c1c1c;
+  --c-white: #f4f3ef;
+  --c-red: #e02424;
+  --c-green: #15803d;
+}
