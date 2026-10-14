@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  
+  # для ручного запуска
+  workflow_dispatch:
 
 permissions:
   contents: read
