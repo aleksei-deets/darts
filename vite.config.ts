@@ -8,5 +8,7 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
-  }
+  },
+  // GitHub Pages project site: https://<user>.github.io/<repo>/
+  base: '/darts/',
 })
