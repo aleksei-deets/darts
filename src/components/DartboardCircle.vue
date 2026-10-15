@@ -18,7 +18,7 @@ function onSectorClick(value: number, multiplier: number): void {
       height="100%"
       style="border-radius: 50%"
     >
-      <!-- Outer miss ring -->
+      <!-- Внешнее кольцо промаха -->
       <circle
         r="200"
         fill="#0f172a"
@@ -26,7 +26,7 @@ function onSectorClick(value: number, multiplier: number): void {
         @click="onSectorClick(0, 1)"
       />
 
-      <!-- 20 sectors -->
+      <!-- 20 секторов -->
       <template v-for="sector in SECTOR_GEOMETRIES" :key="sector.value">
         <path
           :d="sector.doublePath"
@@ -54,7 +54,7 @@ function onSectorClick(value: number, multiplier: number): void {
         />
       </template>
 
-      <!-- Bullseye -->
+      <!-- Яблочко -->
       <circle
         r="24"
         fill="var(--c-green)"
@@ -68,7 +68,7 @@ function onSectorClick(value: number, multiplier: number): void {
         @click="onSectorClick(25, 2)"
       />
 
-      <!-- Number labels -->
+      <!-- Подписи номеров -->
       <text
         v-for="sector in SECTOR_GEOMETRIES"
         :key="'num-' + sector.value"

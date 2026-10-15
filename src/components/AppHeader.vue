@@ -12,7 +12,7 @@ const emit = defineEmits<{
 
 <template>
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <!-- Language switcher -->
+    <!-- Переключатель языка -->
     <div class="btn-group btn-group-sm">
       <button
         class="btn btn-outline-secondary"
@@ -30,7 +30,7 @@ const emit = defineEmits<{
       </button>
     </div>
 
-    <!-- Board view toggle -->
+    <!-- Переключатель вида доски -->
     <div class="btn-group btn-group-sm" role="group">
       <input
         type="radio"
@@ -57,7 +57,7 @@ const emit = defineEmits<{
       </label>
     </div>
 
-    <!-- Help button -->
+    <!-- Кнопка справки -->
     <button
       class="btn btn-sm btn-outline-info"
       @click="emit('toggleHelp')"

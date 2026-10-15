@@ -9,6 +9,6 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
-  // GitHub Pages project site: https://<user>.github.io/<repo>/
+  // Сайт проекта на GitHub Pages: https://<user>.github.io/<repo>/
   base: '/darts/',
 })

@@ -31,18 +31,13 @@ function handleClassicScore(baseValue: number): void {
 <template>
   <div class="card shadow-sm border-0 mb-3">
     <div class="card-body text-center">
-      <!-- Round display -->
-      <div class="d-flex justify-content-between mb-2 text-muted">
-        <span>
-          {{ t('label_round') }}
-          <span class="fw-bold">{{ game.roundNumber }}</span>
-        </span>
-      </div>
+      <!-- Текущий игрок, затем раунд -->
+      <h2 class="player-hero mb-3">{{ game.currentPlayer?.name ?? '---' }}</h2>
 
-      <!-- Current player info -->
-      <h2 v-if="game.currentPlayer" class="text-success fw-bold player-name">
-        {{ game.currentPlayer.name }}
-      </h2>
+      <div class="round-hero mb-3" aria-live="polite">
+        <span class="round-hero-label">{{ t('label_round') }}</span>
+        <span class="round-hero-value">{{ game.roundNumber }}</span>
+      </div>
 
       <div class="d-flex justify-content-center align-items-baseline mb-3">
         <h1 class="display-1 fw-bold mb-0 player-score">
@@ -57,10 +52,10 @@ function handleClassicScore(baseValue: number): void {
         </span>
       </div>
 
-      <!-- Throw badges -->
+      <!-- Бейджи бросков -->
       <ThrowBadges />
 
-      <!-- Dartboard views -->
+      <!-- Виды доски -->
       <DartboardCircle
         v-show="settings.boardView === 'circle'"
         @score="handleCircleScore"
@@ -70,15 +65,75 @@ function handleClassicScore(baseValue: number): void {
         @score="handleClassicScore"
       />
 
-      <!-- Controls -->
+      <!-- Управление -->
       <GameControls />
     </div>
   </div>
 </template>
 
 <style scoped>
-.player-name {
-  margin-bottom: 0.25rem;
+.player-hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  width: fit-content;
+  margin: 0 auto;
+  padding: 8px 16px;
+  border-radius: 14px;
+  border: 1px solid #cdebd9;
+  background: linear-gradient(180deg, #f2fbf5 0%, #eaf8f0 100%);
+  color: #146c43;
+  font-size: clamp(1.85rem, 2.1vw, 2.35rem);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.round-hero {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid #cfe2ff;
+  background: #eef5ff;
+  color: #0b3d91;
+  font-variant-numeric: tabular-nums;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.round-hero-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.round-hero-value {
+  font-size: clamp(1.55rem, 1.8vw, 1.9rem);
+  font-weight: 800;
+  line-height: 1;
+}
+
+@media (max-width: 576px) {
+  .player-hero {
+    min-height: 46px;
+    padding: 7px 12px;
+    font-size: 1.65rem;
+  }
+
+  .round-hero {
+    gap: 8px;
+    padding: 6px 12px;
+  }
+
+  .round-hero-value {
+    font-size: 1.45rem;
+  }
 }
 
 .player-score {

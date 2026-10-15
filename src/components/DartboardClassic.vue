@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
 import { CLASSIC_BOARD_VALUES } from '@/constants/dartboard'
+import PopularCombos from './PopularCombos.vue'
 
 const game = useGameStore()
 
@@ -23,7 +24,7 @@ function onValueClick(value: number): void {
 
 <template>
   <div class="dartboard-classic">
-    <!-- Multiplier controls -->
+    <!-- Управление множителем -->
     <div class="mb-3">
       <button
         class="btn multiplier-btn"
@@ -47,7 +48,7 @@ function onValueClick(value: number): void {
       </button>
     </div>
 
-    <!-- Number grid -->
+    <!-- Сетка чисел -->
     <div class="d-flex flex-wrap justify-content-center">
       <button
         v-for="value in CLASSIC_BOARD_VALUES"
@@ -60,6 +61,8 @@ function onValueClick(value: number): void {
       <button class="btn btn-dark dart-btn" @click="onValueClick(25)">25</button>
       <button class="btn btn-dark dart-btn" @click="onValueClick(50)">50</button>
     </div>
+
+    <PopularCombos />
   </div>
 </template>
 

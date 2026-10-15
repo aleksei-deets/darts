@@ -25,7 +25,7 @@ interface PersistedState {
 }
 
 export const useGameStore = defineStore('game', () => {
-  // ─── Core State ──────────────────────────────────────────────
+  // ─── Основное состояние
   const players = ref<Player[]>([])
   const currentPlayerIndex = shallowRef(0)
   const currentTurnThrows = ref<number[]>([])
@@ -38,17 +38,17 @@ export const useGameStore = defineStore('game', () => {
   const playToLast = shallowRef(true)
   const startScore = shallowRef(301)
 
-  // ─── Multiplier (used by classic board only) ─────────────────
+  // ─── Множитель (только для классической доски)
   const multiplier = shallowRef(1)
 
-  // ─── Modal State ─────────────────────────────────────────────
+  // ─── Состояние модальных окон
   const bustModalVisible = shallowRef(false)
   const winModalData = shallowRef<{ name: string; place: number } | null>(null)
 
-  // Prevents scoring during modal animations or auto-finish delay
+  // Блокирует набор очков во время анимаций модалок или автозавершения хода
   const isProcessingTurn = shallowRef(false)
 
-  // ─── Computed ────────────────────────────────────────────────
+  // ─── Вычисляемые свойства
   const currentPlayer = computed<Player | null>(() =>
     isGameStarted.value ? (players.value[currentPlayerIndex.value] ?? null) : null
   )
@@ -66,7 +66,7 @@ export const useGameStore = defineStore('game', () => {
     return currentPlayer.value.score - currentTurnSum.value
   })
 
-  // ─── Actions ─────────────────────────────────────────────────
+  // ─── Действия
 
   function startGame(config: GameSetupConfig): void {
     players.value = config.playerNames.map(name => ({
@@ -119,6 +119,16 @@ export const useGameStore = defineStore('game', () => {
     }
 
     persistState()
+  }
+
+  function addPopularCombo(combo: readonly number[]): void {
+    if (combo.length !== MAX_THROWS_PER_TURN) return
+    if (isGameOver.value || isProcessingTurn.value) return
+    if (!currentPlayer.value || currentPlayer.value.isFinished) return
+
+    if (currentTurnThrows.value.length > 0) resetTurn()
+    // Пресеты — это готовые значения бросков, множитель к ним не применяется.
+    combo.forEach(value => addScore(value, 1))
   }
 
   function finishTurn(): void {
@@ -259,7 +269,7 @@ export const useGameStore = defineStore('game', () => {
     winModalData.value = null
   }
 
-  // ─── Persistence ─────────────────────────────────────────────
+  // ─── Сохранение состояния
 
   function persistState(): void {
     const state: PersistedState = {
@@ -297,6 +307,19 @@ export const useGameStore = defineStore('game', () => {
       startScore.value = state.startScore ?? 301
       multiplier.value = 1
       isProcessingTurn.value = false
+
+      // Перезагрузка при открытой модалке победы сбрасывает таймер перехода,
+      // поэтому ход остался бы на уже финишировавшем игроке и addScore() отклонял бы все броски.
+      // Повторяем этот переход.
+      if (
+        isGameStarted.value &&
+        !isGameOver.value &&
+        players.value.length > 0 &&
+        currentPlayer.value?.isFinished
+      ) {
+        advanceToNextPlayer()
+      }
+
       return true
     } catch {
       return false
@@ -327,6 +350,7 @@ export const useGameStore = defineStore('game', () => {
     startGame,
     setMultiplier,
     addScore,
+    addPopularCombo,
     undoLastThrow,
     resetTurn,
     rematch,

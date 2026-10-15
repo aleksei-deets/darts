@@ -15,7 +15,7 @@ function close(): void {
     <Transition name="sidebar">
       <div v-if="visible" class="sidebar-backdrop" @click.self="close">
         <div class="sidebar-panel">
-          <!-- Header -->
+          <!-- Заголовок -->
           <div class="sidebar-header">
             <h5 class="mb-0">{{ t('help_title') }}</h5>
             <button
@@ -26,7 +26,7 @@ function close(): void {
             />
           </div>
 
-          <!-- Body -->
+          <!-- Содержимое -->
           <div class="sidebar-body">
             <div class="mb-4">
               <h6 class="help-heading">{{ t('help_h1') }}</h6>
@@ -139,7 +139,7 @@ function close(): void {
   }
 }
 
-/* Slide-in transition */
+/* Анимация выезда */
 .sidebar-enter-active {
   transition: opacity 0.3s ease;
 }

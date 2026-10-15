@@ -102,6 +102,19 @@ export const POPULAR_CHECKOUTS: CheckoutEntry[] = [
   { remaining: 32,  combination: 'D16' }
 ]
 
+export interface ThrowCombo {
+  label: string
+  throws: readonly number[]
+}
+
+// Пресеты для самых частых ходов
+export const POPULAR_COMBOS: ThrowCombo[] = [
+  { label: '0 + 0 + 0', throws: [0, 0, 0] },
+  { label: '1 + 5 + 20', throws: [1, 5, 20] },
+  { label: '1 + 20 + 20', throws: [1, 20, 20] },
+  { label: '60 + 60 + 60', throws: [60, 60, 60] },
+]
+
 export const CLASSIC_BOARD_VALUES = [
   1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
   11, 12, 13, 14, 15, 16, 17, 18, 19, 20
