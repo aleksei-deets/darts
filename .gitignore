@@ -1,6 +1,11 @@
 node_modules/
-bower_components/
+dist/
 *.log
 
-build/
-dist/
+.vite/
+*.local
+*.tsbuildinfo
+
+.env
+.env.*
+!.env.example
