@@ -1,19 +1,10 @@
 <script setup lang="ts">
 import { useGameStore } from '../stores/gameStore'
 import { useI18n } from '@/shared/i18n/useI18n'
+import { throwScore } from '../domain/throws'
 
 const game = useGameStore()
 const { t } = useI18n()
-
-const vColorize = {
-  mounted(vFor: HTMLElement) {
-    vFor.querySelectorAll('.text-muted').forEach((throws) => {
-      throws.innerHTML = throws
-        .textContent!.replace(/D/g, '<span class="double">D</span>')
-        .replace(/T/g, '<span class="triple">T</span>')
-    })
-  },
-}
 </script>
 
 <template>
@@ -33,10 +24,22 @@ const vColorize = {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(entry, index) in game.history" :key="index" v-colorize>
+          <tr v-for="(entry, index) in game.history" :key="index">
             <td>{{ entry.round }}</td>
             <td>{{ entry.playerName }}</td>
-            <td class="text-muted">{{ entry.throws.join(', ') }}</td>
+            <td class="text-muted">
+              <template v-for="(dart, dartIndex) in entry.throws" :key="dartIndex">
+                <span v-if="dartIndex > 0">, </span>
+                <span
+                  :class="{
+                    double: dart.multiplier === 2,
+                    triple: dart.multiplier === 3,
+                  }"
+                >
+                  {{ throwScore(dart) }}
+                </span>
+              </template>
+            </td>
             <td
               class="fw-bold"
               :class="entry.sum === 'BUST' ? 'text-danger' : 'text-primary'"
@@ -61,12 +64,11 @@ const vColorize = {
 .table-sm td {
   padding: 4px 8px;
 }
-</style>
 
-<style>
 .double {
   color: green;
 }
+
 .triple {
   color: red;
 }
