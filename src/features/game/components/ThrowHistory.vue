@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useGameStore } from '@/stores/gameStore'
-import { useI18n } from '@/composables/useI18n'
+import { useGameStore } from '../stores/gameStore'
+import { useI18n } from '@/shared/i18n/useI18n'
 
 const game = useGameStore()
 const { t } = useI18n()
