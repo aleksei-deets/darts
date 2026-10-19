@@ -4,6 +4,16 @@ import { useI18n } from '@/composables/useI18n'
 
 const game = useGameStore()
 const { t } = useI18n()
+
+const vColorize = {
+  mounted(vFor: HTMLElement) {
+    vFor.querySelectorAll('.text-muted').forEach((throws) => {
+      throws.innerHTML = throws
+        .textContent!.replace(/D/g, '<span class="double">D</span>')
+        .replace(/T/g, '<span class="triple">T</span>')
+    })
+  },
+}
 </script>
 
 <template>
@@ -23,11 +33,14 @@ const { t } = useI18n()
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(entry, index) in game.history" :key="index">
+          <tr v-for="(entry, index) in game.history" :key="index" v-colorize>
             <td>{{ entry.round }}</td>
             <td>{{ entry.playerName }}</td>
             <td class="text-muted">{{ entry.throws.join(', ') }}</td>
-            <td class="fw-bold" :class="entry.sum === 'BUST' ? 'text-danger' : 'text-primary'">
+            <td
+              class="fw-bold"
+              :class="entry.sum === 'BUST' ? 'text-danger' : 'text-primary'"
+            >
               {{ entry.sum }}
             </td>
             <td class="fw-bold">{{ entry.remaining }}</td>
@@ -47,5 +60,14 @@ const { t } = useI18n()
 
 .table-sm td {
   padding: 4px 8px;
+}
+</style>
+
+<style>
+.double {
+  color: green;
+}
+.triple {
+  color: red;
 }
 </style>
