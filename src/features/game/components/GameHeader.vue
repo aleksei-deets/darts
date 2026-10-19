@@ -22,7 +22,7 @@ const remainingDisplay = computed(() => {
     </h2>
 
     <div class="col d-flex justify-content-center align-items-center mb-3">
-      <h1 class="display-1 fw-bold mb-3 pb-5 player-score">
+      <h1 class="display-1 fw-bold player-score">
         {{ game.currentPlayer?.score ?? 0 }}
       </h1>
       <span

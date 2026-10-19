@@ -1,20 +1,19 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useGameStore } from '../stores/gameStore'
-import { useI18n } from '@/shared/i18n/useI18n'
-import { BUST } from '../domain/types'
-import { formatThrow } from '../domain/throws'
+import { useGameStore } from '@/stores/gameStore'
+import { useI18n } from '@/composables/useI18n'
 
 const game = useGameStore()
 const { t } = useI18n()
 
-const rows = computed(() =>
-  game.history.map((entry) => ({
-    ...entry,
-    throwsLabel: entry.throws.map(formatThrow).join(', '),
-    isBust: entry.sum === BUST,
-  })),
-)
+const vColorize = {
+  mounted(vFor: HTMLElement) {
+    vFor.querySelectorAll('.text-muted').forEach((throws) => {
+      throws.innerHTML = throws
+        .textContent!.replace(/D/g, '<span class="double">D</span>')
+        .replace(/T/g, '<span class="triple">T</span>')
+    })
+  },
+}
 </script>
 
 <template>
@@ -34,11 +33,14 @@ const rows = computed(() =>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(entry, index) in rows" :key="index">
+          <tr v-for="(entry, index) in game.history" :key="index" v-colorize>
             <td>{{ entry.round }}</td>
             <td>{{ entry.playerName }}</td>
-            <td class="text-muted">{{ entry.throwsLabel }}</td>
-            <td class="fw-bold" :class="entry.isBust ? 'text-danger' : 'text-primary'">
+            <td class="text-muted">{{ entry.throws.join(', ') }}</td>
+            <td
+              class="fw-bold"
+              :class="entry.sum === 'BUST' ? 'text-danger' : 'text-primary'"
+            >
               {{ entry.sum }}
             </td>
             <td class="fw-bold">{{ entry.remaining }}</td>
@@ -58,5 +60,14 @@ const rows = computed(() =>
 
 .table-sm td {
   padding: 4px 8px;
+}
+</style>
+
+<style>
+.double {
+  color: green;
+}
+.triple {
+  color: red;
 }
 </style>
