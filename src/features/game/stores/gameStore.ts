@@ -240,31 +240,37 @@ export const useGameStore = defineStore('game', () => {
     const prevPlayerIndex = players.value.findIndex(
       (el) => el.name == lastTurn.playerName,
     )
-    const thisRoundLeftHistory = history.value.filter(
-      (el) => el.round == lastTurn.round,
-    )
-    roundNumber.value = lastTurn.round
-
-    if (lastTurn.sum === BUST) {
-      currentPlayerIndex.value = prevPlayerIndex
-      return
+    if (lastTurn.sum !== BUST) {
+      players.value[prevPlayerIndex]!.score += lastTurn.sum
     }
 
-    if (lastTurn.remaining == 0) {
-      players.value[prevPlayerIndex]!.isFinished = false
-      players.value[prevPlayerIndex]!.place = null
-      someoneWonInThisRound.value = !!thisRoundLeftHistory.find(
-        (el) => el.remaining == 0,
-      )
-      if (!someoneWonInThisRound.value) {
-        currentPlace.value--
+    // Финишировать с ненулевым остатком можно только автоматически (последний при playToLast = false),
+    // поэтому после отмены любого хода такой финиш, как и отменённое закрытие, снимается.
+    for (const player of players.value) {
+      if (player.isFinished && player.score !== 0) {
+        player.isFinished = false
+        player.place = null
       }
     }
 
-    players.value[prevPlayerIndex]!.score += lastTurn.sum
+    roundNumber.value = lastTurn.round
     currentPlayerIndex.value = prevPlayerIndex
+    currentTurnThrows.value = []
+    multiplier.value = 1
+    restorePlaceCounters()
+    isGameOver.value = false
 
     persistState()
+  }
+
+  /** Место следующего закрывшегося — 1 + число прошлых раундов, в которых кто-то закрылся. */
+  function restorePlaceCounters(): void {
+    const checkoutRounds = new Set(
+      history.value.filter((turn) => turn.remaining === 0).map((turn) => turn.round),
+    )
+    someoneWonInThisRound.value = checkoutRounds.has(roundNumber.value)
+    currentPlace.value =
+      1 + [...checkoutRounds].filter((round) => round < roundNumber.value).length
   }
 
   function endGame(): void {
