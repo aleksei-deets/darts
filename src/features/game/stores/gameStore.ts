@@ -203,10 +203,9 @@ export const useGameStore = defineStore('game', () => {
     const nextIdx = (oldIdx + 1) % players.value.length
 
     if (nextIdx <= oldIdx) {
-      if (someoneWonInThisRound.value) {
-        currentPlace.value++
-        someoneWonInThisRound.value = false
-      }
+      // Закрывшиеся в одном раунде делят место, но следующие идут после всех них: 1, 1, 3.
+      currentPlace.value = players.value.filter((p) => p.isFinished).length + 1
+      someoneWonInThisRound.value = false
       roundNumber.value++
 
       const active = activePlayers.value
@@ -263,14 +262,12 @@ export const useGameStore = defineStore('game', () => {
     persistState()
   }
 
-  /** Место следующего закрывшегося — 1 + число прошлых раундов, в которых кто-то закрылся. */
+  /** Место следующего закрывшегося — 1 + число игроков, закрывшихся в прошлых раундах. */
   function restorePlaceCounters(): void {
-    const checkoutRounds = new Set(
-      history.value.filter((turn) => turn.remaining === 0).map((turn) => turn.round),
-    )
-    someoneWonInThisRound.value = checkoutRounds.has(roundNumber.value)
+    const checkouts = history.value.filter((turn) => turn.remaining === 0)
+    someoneWonInThisRound.value = checkouts.some((turn) => turn.round === roundNumber.value)
     currentPlace.value =
-      1 + [...checkoutRounds].filter((round) => round < roundNumber.value).length
+      1 + checkouts.filter((turn) => turn.round < roundNumber.value).length
   }
 
   function endGame(): void {
